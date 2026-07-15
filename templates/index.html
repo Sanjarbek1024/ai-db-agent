@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}AI SQL Agent{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+
+    <header class="topbar">
+        <div class="brand"><span class="brand-mark">&#9670;</span> AI SQL Agent</div>
+        <div class="topbar-sub">Human language &rarr; Safe SQL &rarr; Result</div>
+    </header>
+
+    <main class="layout">
+        <section class="console">
+            <form id="ask-form" class="ask-form">
+                <label for="question">Your Question</label>
+                <div class="ask-row">
+                    <input
+                        id="question"
+                        name="question"
+                        type="text"
+                        placeholder="e.g., Show the 5 most expensive listings in Tashkent"
+                        autocomplete="off"
+                        required
+                    >
+                    <button type="submit" id="ask-btn">
+                        <span class="btn-label">Ask</span>
+                        <span class="btn-spinner" hidden></span>
+                    </button>
+                </div>
+                <div class="examples">
+                    <span>Examples:</span>
+                    <button type="button" class="chip" data-q="What are the top 5 most expensive listings in Tashkent?">What are the top 5 most expensive listings in Tashkent?</button>
+                    <button type="button" class="chip" data-q="Show sellers with a rating above 4.7">Show sellers with a rating above 4.7</button>
+                    <button type="button" class="chip" data-q="Show the 5 most expensive listings in Tashkent">Show the 5 most expensive listings in Tashkent</button>
+                </div>
+            </form>
+
+            <div id="status" class="status" hidden></div>
+
+            <div class="panel" id="sql-panel" hidden>
+                <div class="panel-header">
+                    <span class="panel-label">Generated SQL</span>
+                    <span class="badge badge-select">SELECT-only</span>
+                </div>
+                <pre class="sql-code" id="sql-code"></pre>
+            </div>
+
+            <div class="panel" id="result-panel" hidden>
+                <div class="panel-header">
+                    <span class="panel-label">Result</span>
+                    <span class="row-count" id="row-count"></span>
+                </div>
+                <div class="table-wrap" id="table-wrap"></div>
+            </div>
+
+            <div class="panel panel-error" id="error-panel" hidden>
+                <div class="panel-header">
+                    <span class="panel-label">&#9888; Error</span>
+                </div>
+                <p id="error-text"></p>
+            </div>
+        </section>
+
+        <aside class="schema-sidebar">
+            <h2>Allowed Tables</h2>
+            <p class="schema-note">
+                AI can only query the following tables.
+                Any other tables or DELETE / UPDATE / INSERT
+                commands will be automatically rejected by <code>sql_guard</code>.
+            </p>
+
+            <svg class="schema-map" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M0,0 L10,5 L0,10 z" fill="#5EEAD4"/>
+                    </marker>
+                </defs>
+
+                <line x1="70" y1="64" x2="90" y2="156" stroke="#5EEAD4" stroke-width="1.5" marker-end="url(#arrow)"/>
+                <line x1="170" y1="138" x2="150" y2="156" stroke="#5EEAD4" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+                <rect x="10" y="10" width="220" height="54" rx="8" class="tbl-box"/>
+                <text x="24" y="30" class="tbl-title">categories</text>
+                <text x="24" y="48" class="tbl-cols">id, name</text>
+
+                <rect x="10" y="84" width="220" height="54" rx="8" class="tbl-box"/>
+                <text x="24" y="104" class="tbl-title">sellers</text>
+                <text x="24" y="122" class="tbl-cols">id, name, city, rating</text>
+
+                <rect x="10" y="158" width="220" height="98" rx="8" class="tbl-box tbl-box--main"/>
+                <text x="24" y="178" class="tbl-title">listings</text>
+                <text x="24" y="196" class="tbl-cols">id, title, price,</text>
+                <text x="24" y="212" class="tbl-cols">category_id, seller_id,</text>
+                <text x="24" y="228" class="tbl-cols">location, created_at,</text>
+                <text x="24" y="244" class="tbl-cols">is_active</text>
+            </svg>
+        </aside>
+    </main>
+</div>
+{% endblock %}
