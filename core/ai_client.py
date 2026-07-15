@@ -46,10 +46,10 @@ run_sql_query_function = {
     "name": "run_sql_query",
     "description": "Executes a safe SQLite SELECT query and returns the results.",
     "parameters": {
-        "type": "object",
+        "type": "OBJECT",
         "properties": {
             "query": {
-                "type": "string",
+                "type": "STRING",
                 "description": "A safe SQLite SELECT query to execute. Reminder: Only SELECT queries are allowed."
             }
         },
@@ -67,9 +67,9 @@ def generate_sql(question: str) -> str:
     if client is None:
         raise AIClientError("Gemini API client is not initialized. Please check your API key.")
     
-    tool = types.TOOL(function_declaration=run_sql_query_function)
+    tool = types.Tool(function_declarations=[run_sql_query_function])
     
-    response = client.model.generate_content(
+    response = client.models.generate_content(
         model=GEMINI_MODEL,
         contents=question,
         config = types.GenerateContentConfig(
